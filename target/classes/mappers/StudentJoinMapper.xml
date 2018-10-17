@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="StudentJoinMapper">
+
+	<resultMap id="StudProfDept" type="study.spring.hellospring.model.StudProfDept">
+		<result property="studno" column="studno" />
+		<result property="name" column="name" />
+		<result property="userid" column="userid" />
+        <result property="grade" column="grade" />
+        <result property="idnum" column="idnum" />
+        <result property="birthdate" column="birthdate" />
+        <result property="tel" column="tel" />
+        <result property="height" column="height" />
+        <result property="weight" column="weight" />
+        <result property="deptno" column="deptno" />
+        <result property="profno" column="profno" />
+        <result property="dname" column="dname" />
+        <result property="pname" column="pname" />
+	</resultMap>
+
+	<select id="selectStudProfDeptList" parameterType="study.spring.hellospring.model.StudProfDept"
+	 resultMap="StudProfDept">
+		SELECT studno, s.name, s.userid, grade, idnum, DATE_FORMAT(birthdate, '%Y-%m-%d') AS birthdate, tel,
+		 height, weight, d.dname, CONCAT(P.name, '', P.position) AS pname FROM student s 
+		 INNER JOIN department d ON s.deptno=d.deptno LEFT OUTER JOIN professor p ON s.profno=p.profno
+		<where>
+			<if test="name != null and name != ''">
+				s.name LIKE concat('%', #{name}, '%')
+			</if>
+		</where>
+		
+		ORDER   BY studno DESC
+		LIMIT #{limitStart}, #{listCount}
+		
+	</select>
+		
+	<select id="selectStudProfDeptItem" parameterType="study.spring.hellospring.model.StudProfDept"
+	 resultMap="StudProfDept">
+		SELECT studno, s.name, s.userid, grade, idnum, DATE_FORMAT(birthdate, '%Y-%m-%d') AS birthdate, tel,
+		 height, weight, d.dname, CONCAT(P.name, '', P.position) AS pname FROM student s
+		  INNER JOIN department d ON s.deptno=d.deptno LEFT OUTER JOIN professor p ON s.profno=p.profno WHERE studno=#{studno}
+	</select>
+	
+	<select id="selectStudProfDeptCount"
+		parameterType="study.spring.hellospring.model.StudProfDept"
+		resultType="int">
+		SELECT count(studno) FROM student s INNER JOIN department d ON s.deptno=d.deptno LEFT OUTER JOIN professor p ON s.profno=p.profno
+		<where>
+			<if test="name != null and name != ''">
+				s.name LIKE concat('%', #{name}, '%')
+			</if>
+		</where>
+	</select>
+		
+</mapper>
